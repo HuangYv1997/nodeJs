@@ -1,0 +1,33 @@
+var getXlsx = require("node-xlsx"); //引入node-xlsx，读取Xlsx文件
+var fs = require("fs"); //引入fs,读写文件
+var list = getXlsx.parse("./serverSetting.xlsx");
+
+let parse = {};
+for (let n = 0; n < list.length; n++ ) {
+    var data = [...(list[n].data)];
+    let arrFun = [];
+    arrFun = data[2];
+
+    let parseIdData = {};
+    if (!arrFun) continue;
+
+    for (let m = 4 ; m < data.length ; m++) {
+        id = data[m][0];
+        let parseData = {};
+        for (let i = 0; i < arrFun.length ;i++) {
+            const key = arrFun[i];
+            const value = data[m][i];
+            parseData[key] = value;
+        }
+        parseIdData[id] = parseData;
+    }
+    parse[list[n].name.split("|")[1]] = parseIdData;
+}
+
+fs.writeFile('data.json', JSON.stringify(parse), (err)=>{
+    if (err) {resizeBy.status(500).send('Server is error...')};
+})
+
+
+
+
